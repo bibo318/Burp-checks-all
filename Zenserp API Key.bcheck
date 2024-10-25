@@ -2,7 +2,7 @@ metadata:
   language: v1-beta
   name: "Zenserp API Key"
   description: "Looks for Zenserp API keys in page source."
-  author: "puzzlepeaches"
+  author: "DemonGod"
   tags: "exposure", "token", "zenserp", "apikey" 
 
 given response then

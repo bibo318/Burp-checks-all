@@ -6,7 +6,7 @@ metadata:
     language: v2-beta
     name: "Malicious JavaScript import in use"
     description: "Inspects HTML responses for script tags that reference domains known to serve malware"
-    author: "Dolph Flynn"
+    author: "DemonGod"
     tags: "passive", "javascript"
 
 given response then

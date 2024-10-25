@@ -2,7 +2,7 @@ metadata:
     language: v1-beta
     name: "SameSite attribute was set to None"
     description: "Detect when a cookie set the SameSite attribute to None."
-    author: "Dominique Righetto"
+    author: "DemonGod"
     tags: "passive","informative"
    
  given response then

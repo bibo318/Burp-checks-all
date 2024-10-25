@@ -2,7 +2,7 @@ metadata:
     language: v2-beta
     name: "Unauthenticated Access"
     description: "Removes the Authorization header"
-    author: "kun_19"
+    author: "DemonGod"
     tags: "auth"
 
 define:

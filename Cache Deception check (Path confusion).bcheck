@@ -2,7 +2,7 @@ metadata:
   language: v1-beta
   name: "Cache Deception check (Path confusion)"
   description: "Check for misconfiguration while routing .css, .js, .png files"
-  author: "Sergey Kolesnikov (tr3harder) "
+  author: "DemonGod "
 
 run for each:
   potential_path =

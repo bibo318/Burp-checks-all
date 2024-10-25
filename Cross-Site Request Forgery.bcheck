@@ -2,7 +2,7 @@ metadata:
     language: v2-beta
     name: "Cross-Site Request Forgery"
     description: "Does some CSRF check"
-    author: "kun_19"
+    author: "DemonGod"
     tags: "csrf"
 
 given request then

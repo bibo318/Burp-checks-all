@@ -2,7 +2,7 @@ metadata:
     language: v1-beta
     name: "Ivanti API Unauthenticated Access"
     description: "Ivanti Endpoint Manager Mobile (EPMM) - Unauthenticated Access"
-    author: "Dolph Flynn"
+    author: "DemonGod"
     tags: "Ivanti", "Unauthenticated Access", "CVE-2023-35078"
 
 

@@ -2,7 +2,7 @@ metadata:
     language: v2-beta
     name: "Morvarid Dom-XSS"
     description: "Checks if the application is vulnerable to Morvarid Dom-XSS."
-    author: "@KalhorAlireza"
+    author: "DemonGod"
     tags: "xss", "dom-xss"
 
 run for each:

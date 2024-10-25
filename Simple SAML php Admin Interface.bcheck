@@ -2,7 +2,7 @@ metadata:
     language: v1-beta
     name: "Simple SAML php Admin Interface"
     description: "Tests for exposed admin interface of Simple SAML php"
-    author: "Patrick Schmid"
+    author: "DemonGod"
 
 run for each:
     potential_path =

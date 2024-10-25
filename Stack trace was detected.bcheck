@@ -2,7 +2,7 @@ metadata:
     language: v1-beta
     name: "Stack trace was detected"
     description: "Detect when a response contains a stack trace."
-    author: "Dominique Righetto"
+    author: "DemonGod"
     tags: "passive","informative"
 
 define:

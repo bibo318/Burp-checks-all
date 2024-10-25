@@ -2,7 +2,7 @@ metadata:
     language: v1-beta
     name: "Unauthenticated Access to Prometheus (passive)"
     description: "Check if the Prometheus Server is publicly accessible."
-    author: "@nightshiba"
+    author: "DemonGod"
     tags: "passive"
 
 given response then

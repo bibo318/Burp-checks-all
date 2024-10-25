@@ -2,7 +2,7 @@ metadata:
     language: v2-beta
     name: "Use of Known API Variable"
     description: "This BCheck looks for known API variables (client_secret, client_id, refresh_token, & APIKey)."
-    author: "Kyle Gilligan"
+    author: "DemonGod"
     tags: "passive", "API", "client_secret", "client_id", "ApiKey"
 
 define:
