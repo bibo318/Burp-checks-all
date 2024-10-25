@@ -1,0 +1,28 @@
+metadata:
+    language: v1-beta
+    name: "CSP - Unsafe Directive Used"
+    description: "Checks for unsafe-eval or unsafe-inline directives in CSP. Please verify manually."
+    tags: "passive"
+		author: "DemonGod"
+
+given response then
+		# CSP Via Headers
+    if "content-security-policy" in {to_lower({latest.response.headers})} then
+				if ("unsafe-inline" in {to_lower({latest.response.headers})}) or ("unsafe-eval" in {to_lower({latest.response.headers})}) then 
+	        report issue:
+	            severity: low
+	            confidence: firm
+	            detail: "Content Security Policy Header uses unsafe directives."
+	            remediation: "Consider removing unsafe directives from CSP."
+    		end if 				
+	end if
+
+	# CSP Via Meta Tag
+	if {latest.response} matches "<(?i)(meta)\s+(?i)(http-equiv)\s*=\s*[\"'](?i)(Content-Security-Policy)[\"'][^>]*?((?i)(unsafe-inline)|(?i)(unsafe-eval))[^>]*>" then
+
+		report issue:
+        severity: low
+        confidence: firm
+        detail: "Content Security Policy Meta Header uses unsafe directives."
+        remediation: "Consider removing unsafe directives from CSP."
+	end if

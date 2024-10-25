@@ -1,0 +1,14 @@
+metadata:
+    language: v1-beta
+    name: "PHP Version"
+    description: "PHP Version detected"
+    tags: "passive"
+
+given response then
+    if {latest.response.headers} matches "PHP/[A-Za-z0-9-+.]+" then
+        report issue:
+            severity: info
+            confidence: firm
+            detail: "PHP version was detected"
+            remediation: "Ensure that PHP Version is not disclosed"
+    end if

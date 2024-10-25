@@ -1,0 +1,16 @@
+# Big likelihood of False Positives with custom headers here but not yet tested.
+metadata:
+    language: v1-beta
+    name: "Server - HTTP Server Header observed."
+    description: "Checks for HTTP Server version disclosure."
+    tags: "passive"
+		author: "DemonGod"
+
+given response then
+    if ("server" in {to_lower({latest.response.headers})}) then
+        report issue:
+            severity: info
+            confidence: tentative
+            detail: "Potential server version disclosure."
+            remediation: "Consider removing the Server header to avoid accidentally disclosing technologies in use."
+    end if

@@ -1,0 +1,76 @@
+metadata:
+    language: v2-beta
+    name: "Cross-Site Request Forgery"
+    description: "Does some CSRF check"
+    author: "kun_19"
+    tags: "csrf"
+
+given request then
+
+    # Check if no anti CSRF token is in POST request. Search in header or body
+    if {latest.request.method} is "POST" and
+        not("csrf" in {to_lower({latest.request.headers})}) and
+        not("csrf" in {to_lower({latest.request.body})}) and
+        not("xsrf" in {to_lower({latest.request.headers})}) and
+        not("xsrf" in {to_lower({latest.request.body})}) then
+
+        if not("Content-Type: application/json" in {latest.request.headers}) then
+            # No JSON
+            report issue:
+                severity: high
+                confidence: tentative
+                detail: `No CSRF token found in POST request`
+                remediation: `Use a secret anti CSRF token`
+
+        else then
+            # Can be changed to GET?
+            send request called get:
+                replacing method: "GET"
+
+            send request called options:
+                replacing method: "OPTIONS"
+
+            if {get.response.status_code} matches "2[0-9]{2}" then
+                report issue:
+                    severity: high
+                    confidence: tentative
+                    detail: `No CSRF token found in JSON POST request and might can be changed to GET`
+                    remediation: `Use a secret anti CSRF token`
+            end if
+
+            if "GET" in {options.response.headers} then
+                report issue:
+                    severity: high
+                    confidence: tentative
+                    detail: `No CSRF token found in JSON POST request and might can be changed to GET`
+                    remediation: `Use a secret anti CSRF token`
+            end if
+
+            # Content-Type can be changed to text/plain or application/x-www-form-urlencoded
+            send request called change_content_type_plain:
+                replacing headers:
+                    "Content-Type":"text/plain"
+
+            send request called change_content_type_form:
+                replacing headers:
+                    "Content-Type":"application/x-www-form-urlencoded"
+
+            if not({change_content_type_plain.response.status_code} matches "4[0-9]{2}") then
+                report issue:
+                    severity: high
+                    confidence: tentative
+                    detail: `No CSRF token found in JSON POST request and might can be changed to text/plain`
+                    remediation: `Don't allow other Content Types`
+            end if
+
+            if not({change_content_type_form.response.status_code} matches "415") then
+                report issue:
+                    severity: high
+                    confidence: tentative
+                    detail: `No CSRF token found in JSON POST request and might can be changed to application/x-www-form-urlencoded`
+                    remediation: `Don't allow other Content Types`
+            end if
+        end if
+
+    end if
+    

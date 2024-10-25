@@ -1,0 +1,39 @@
+metadata:
+    language: v2-beta
+    name: "Reflected Cross-Site Scripting"
+    description: "Inserts special characters related to XSS and checks if they are reflected without encoding in the response (text/html)"
+    author: "DemonGod"
+    tags: "xss", "reflected", "injection"
+
+define:
+    issueDetail = `Reflected Cross-Site Scripting`
+    issueRemediation = `Ensure proper output encoding`
+
+run for each:
+    canary = `{random_str(6)}`
+    injections = `<`, `"`, `'`
+
+given insertion point then
+    send payload called reflection:
+        appending: `{canary}{injections}`
+
+    send payload called reflection_href:
+        replacing: `{canary}`
+
+    # Reflected without encoding
+    if `{canary}{injections}` in {reflection.response.body} and "text/html" in {reflection.response.headers} then
+        report issue:
+            severity: high
+            confidence: tentative
+            detail: `{issueDetail}`
+            remediation: `{issueRemediation}`
+    end if
+
+    # Reflected in href
+    if `href="{canary}"` in `{reflection_href.response.body}` then
+        report issue:
+            severity: high
+            confidence: tentative
+            detail: `{issueDetail}`
+            remediation: `{issueRemediation}`
+    end if

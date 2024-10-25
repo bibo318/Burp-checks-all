@@ -1,0 +1,30 @@
+metadata:
+    language: v2-beta
+    name: "Morvarid Dom-XSS"
+    description: "Checks if the application is vulnerable to Morvarid Dom-XSS."
+    author: "@KalhorAlireza"
+    tags: "xss", "dom-xss"
+
+run for each:
+    vulnerable_path =
+        "/Hermes.html",
+        "/Hermes_Web/Dashboard/assets/Dashboard.html",
+        "/Hermes_Web/automation/chat/assets/index.html"
+
+define:
+    xss_payload = "?route='\"/onmouseover=alert(origin)//"
+
+given host then
+    send request called check:
+        method: "GET"
+        path: {vulnerable_path}
+
+    #queries: "param=oauth'\"/onmouseover=alert(origin)//"
+    if "document.createElement('div');" in {check.response.body} and
+        "'+myroute+'" in {check.response.body} then
+        report issue and continue:
+            severity: high
+            confidence: certain
+            detail: `The web application is vulnerable to Morvarid Dom-XSS:\n{check.request.url}{xss_payload}`
+            remediation: "There isn't any fix from vendor."
+    end if

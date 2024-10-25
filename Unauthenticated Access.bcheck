@@ -1,0 +1,25 @@
+metadata:
+    language: v2-beta
+    name: "Unauthenticated Access"
+    description: "Removes the Authorization header"
+    author: "kun_19"
+    tags: "auth"
+
+define:
+    issueDetail = `Unauthenticated Access`
+    issueRemediation = `Ensure you're checking for authentication`
+
+given request then
+    
+    if "Authorization" in {latest.request.headers} then
+        send request called unauth:
+            removing headers: "Authorization"
+
+        if {unauth.response.status_code} matches "2[0-9]{2}" then
+            report issue:
+                severity: high
+                confidence: tentative
+                detail: `{issueDetail}`
+                remediation: `{issueRemediation}`
+        end if
+    end if

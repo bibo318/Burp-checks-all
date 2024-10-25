@@ -1,0 +1,100 @@
+metadata:
+    language: v2-beta
+    name: "Error Based SQL Injection"
+    description: "Inserts a basic SQLi payload into every insertion point and checks for error messages and HTTP status code."
+    author: "DemonGod"
+    tags: "sqli", "error-based", "injection"
+
+define:
+    issueDetail = `Error-based SQL injection`
+    references = `
+    References:
+    - https://portswigger.net/web-security/sql-injection
+    - https://owasp.org/www-community/attacks/SQL_Injection
+    - https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/05-Testing_for_SQL_Injection
+    - https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html`
+    issueRemediation = `Ensure clear, descriptive error messages with guidance on resolution steps
+     {references}`
+
+run for each:
+    injections = `'"`, `"`, `'`
+    injections_check = `''`, `""`
+
+given insertion point then
+    send payload:
+        appending: {injections}
+
+    send payload:
+        replacing: {injections}
+
+    # SQL error
+    if {latest.response.body} matches "You have an error in your SQL syntax" or
+        {latest.response.body} matches "Error: Unknown column" or
+        {latest.response.body} matches "MySqlClient\." or
+        {latest.response.body} matches "com\.mysql\.jdbc\.exceptions" or
+        {latest.response.body} matches "Illegal mix of collations \([\w\s\,]+\) and \([\w\s\,]+\) for operation" or
+        {latest.response.body} matches "valid MySQL result" or
+        {latest.response.body} matches "warning mysql_" or
+        {latest.response.body} matches "CLI Driver.*DB2" or
+        {latest.response.body} matches "db2_\w+\(" or
+        {latest.response.body} matches "DB2 SQL error" or
+        {latest.response.body} matches "\bdb2_\w+\(" or
+        {latest.response.body} matches "\[(ODBC SQL Server Driver|SQL Server|ODBC Driver Manager)\]" or
+        {latest.response.body} matches "Unclosed quotation mark" or
+        {latest.response.body} matches "warning.*mssql_.*" or
+        {latest.response.body} matches "Driver.* SQL[-_]*Server" or
+        {latest.response.body} matches "(\W|\A)SQL Server.*Driver" or
+        {latest.response.body} matches "Conversion failed when converting the" or
+        {latest.response.body} matches "Cannot initialize the data source object of OLE DB provider" or
+        {latest.response.body} matches "QUERY\s+\[thread1\] SyntaxError:" or
+        {latest.response.body} matches "uncaught exception:" or
+        {latest.response.body} matches "PostgreSQL.*ERROR" or
+        {latest.response.body} matches "Warning.*\Wpg_.*" or
+        {latest.response.body} matches "Wvalid PostgreSQL result" or
+        {latest.response.body} matches "Npgsql\." or
+        {latest.response.body} matches "org\.postgresql\.util\.PSQLException" or
+        {latest.response.body} matches "SQLite/JDBCDriver" or
+        {latest.response.body} matches "SQLite.Exception" or
+        {latest.response.body} matches "System.Data.SQLite.SQLiteException" or
+        {latest.response.body} matches "Warning.*sqlite_.*" or
+        {latest.response.body} matches "Warning.*SQLite3::" or
+        {latest.response.body} matches "Warning.*sqlite_.*" or
+        {latest.response.body} matches "\[SQLITE_ERROR\]" or
+        {latest.response.body} matches "org\.hsqldb\.jdbc" or
+        {latest.response.body} matches "Dynamic SQL Error" or
+        {latest.response.body} matches "\[function.ibase.query\]" or
+        {latest.response.body} matches "Warning.*maxdb.*" or
+        {latest.response.body} matches "Warning.*ingre_" or
+        {latest.response.body} matches "Warning.*ibase_.*" or
+        {latest.response.body} matches "(?i)Warning.*sybase.*" or
+        {latest.response.body} matches "SQL error.*POS([0-9]+).*" or
+        {latest.response.body} matches "Ingres SQLSTATE" or
+        {latest.response.body} matches "Ingres\W.*Driver" or
+        {latest.response.body} matches "DB Error:" then
+        report issue:
+            severity: high
+            confidence: firm
+            detail: `{issueDetail}`
+            remediation: `{issueRemediation}`
+
+        if {latest.response.status_code} matches "5[0-9]{2}" then
+            
+            report issue:
+                severity: info
+                confidence: tentative
+                detail: `{issueDetail}`
+                remediation: `{issueRemediation}`
+
+            # Send request with two double quotes / single quotes
+            send payload:
+                appending: {injections_check}
+
+            if not({latest.response.status_code} matches "5[0-9]{2}") then
+                report issue:
+                severity: high
+                confidence: tentative
+                detail: `{issueDetail}`
+                remediation: `{issueRemediation}`
+            end if
+        end if
+    end if
